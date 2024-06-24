@@ -1,5 +1,5 @@
 import logging
-from src.configuration import Configuration
+from .config import Configuration
 
 
 class Logger:

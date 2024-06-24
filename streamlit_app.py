@@ -11,7 +11,7 @@ st.write(
 )
 
 st.write(
-    "Imagine you are evaluating different models for a Q&A bot "
+    "Imagine you are evaluating different embedding_models for a Q&A bot "
     "and you want to evaluate a set of model generated responses. "
     "You have collected some user data. "
     "Here is a sample question and response set."
