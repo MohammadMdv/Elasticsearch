@@ -14,12 +14,14 @@ class EmbeddingService:
 
     def load_model(self, model_name: str):
         logger.info(f"Loading model: {model_name}")
-        for model in os.listdir('../../embedding_models'):
+
+        for model in os.listdir('./embedding_models'):
             if model == model_name:
-                return SentenceTransformer(f"../../embedding_models/{model_name}")
+                logger.info(f"Model already exists: {model_name}")
+                return SentenceTransformer(f"./embedding_models/{model_name}")
         logger.info(f"Downloading model: {model_name}")
         self.model = SentenceTransformer(model_name)
-        self.model.save(f"../../embedding_models/{model_name}")
+        self.model.save(f"./embedding_models/{model_name}")
         return self.model
 
     def encode(self, text: str):

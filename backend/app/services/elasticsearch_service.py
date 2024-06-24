@@ -26,13 +26,13 @@ class ElasticsearchService:
         return response
 
     @handle_elasticsearch_errors
-    def get_document(self, index_name: str, doc_id: int):
+    def get_document(self, index_name: str, doc_id):
         response = self.client.get(index=index_name, id=doc_id)
         logger.info(f"Getting document from index: {index_name} with id: {doc_id}")
         return response['_source']
 
     @handle_elasticsearch_errors
-    def update_document_by_id(self, index_name: str, doc_id: int, body: dict):
+    def update_document_by_id(self, index_name: str, doc_id, body: dict):
         response = self.client.update(index=index_name, id=doc_id, body={"doc": body})
         logger.info(f"Updated document in {index_name} with id: {doc_id}")
         return response
@@ -44,7 +44,7 @@ class ElasticsearchService:
         return True
 
     @handle_elasticsearch_errors
-    def delete_document(self, index_name: str, doc_id: int):
+    def delete_document(self, index_name: str, doc_id):
         response = self.client.delete(index=index_name, id=doc_id)
         logger.info(f"Deleted document {doc_id} from {index_name} index")
         return response
