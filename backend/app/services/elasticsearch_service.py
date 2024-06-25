@@ -61,6 +61,18 @@ class ElasticsearchService:
         return result['hits']['hits']
 
     @handle_elasticsearch_errors
+    def knn_search(self, index_name: str, field: str, query_vector: list, k: int = 2, num_candidates: int = 500):
+        query = {
+            "field": field,
+            "query_vector": query_vector,
+            "k": k,
+            "num_candidates": num_candidates
+        }
+        response = self.client.knn_search(index=index_name, knn=query)
+        logger.info(f"KNN search executed on index {index_name} with field {field}")
+        return response['hits']['hits']
+
+    @handle_elasticsearch_errors
     def count(self, index_name: str):
         self.client.indices.refresh(index=index_name)
         result = self.client.count(index=index_name)

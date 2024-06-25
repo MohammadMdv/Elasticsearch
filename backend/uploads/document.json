@@ -1,0 +1,18 @@
+[
+  {
+    "index_name": "test",
+    "body": {
+      "name": "mohammad",
+      "last_name": "mahdavi"
+    },
+    "doc_id": "1"
+  },
+  {
+    "index_name": "test",
+    "body": {
+      "name": "ali",
+      "last_name": "mahdavi"
+    },
+    "doc_id": "2"
+  }
+]
