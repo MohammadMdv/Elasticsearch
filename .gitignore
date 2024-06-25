@@ -1,2 +1,3 @@
 KnnTest/model
 .venv
+backend/embedding_models
