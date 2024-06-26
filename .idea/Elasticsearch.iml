@@ -7,4 +7,11 @@
     <orderEntry type="jdk" jdkName="C:\Users\ALFA RAYAN\anaconda3" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PyNamespacePackagesService">
+    <option name="namespacePackageFolders">
+      <list>
+        <option value="$MODULE_DIR$/frontend" />
+      </list>
+    </option>
+  </component>
 </module>
