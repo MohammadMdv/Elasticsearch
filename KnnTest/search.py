@@ -9,7 +9,7 @@ es = Elasticsearch("http://localhost:9200")
 # Index name containing the vectors
 index_name = "netflix_movie_vector"
 
-# Initialize SentenceTransformer model
+# Initialize SentenceTransformer bert-base-nli-mean-tokens
 model_name = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
 model = SentenceTransformer(model_name, cache_folder='cache/')
 

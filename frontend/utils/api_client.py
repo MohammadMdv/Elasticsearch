@@ -38,8 +38,8 @@ class APIClient:
         response = requests.post(f"{self.base_url}/set_model/", json={"model_name": model_name})
         return response.json()
 
-    def generate_embedding(self, text):
-        response = requests.post(f"{self.base_url}/generate_embedding/", json={"text": text})
+    def create_embeddings(self, text):
+        response = requests.post(f"{self.base_url}/create_embeddings/", json={"text": text})
         return response.json()
 
     def get_index_mapping(self, index_name):

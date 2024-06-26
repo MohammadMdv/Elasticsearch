@@ -11,7 +11,7 @@ class EmbeddingService:
     def __init__(self):
         self.config = Configuration().get_config('embedding')
         self.model_names = [model for model in self.config['model_names']]
-        self.current_model = self.load_model(self.model_names[0])
+        self.current_model = self.load_model(self.model_names[1])
 
     def set_model(self, model_name: str):
         if model_name in self.model_names:

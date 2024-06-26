@@ -46,10 +46,10 @@ class SemanticSearchRequest(BaseModel):
 @app.get("/get_vector_fields/{index_name}")
 async def get_vector_fields(index_name: str):
     try:
-        mappings = es_service.get_index_mapping(index=index_name)
+        mappings = es_service.get_index_mapping(index_name=index_name)
         properties = mappings[index_name]['mappings']['properties']
         vector_fields = [field for field in properties.keys() if field.endswith('_vector')]
-        return {"vector_fields": vector_fields}
+        return vector_fields
     except NotFoundError:
         raise HTTPException(status_code=404, detail="Index not found")
     except Exception as e:
@@ -59,7 +59,7 @@ async def get_vector_fields(index_name: str):
 @app.get("/get_index_mapping/{index_name}")
 async def get_index_mapping(index_name: str):
     try:
-        response = es_service.get_index_mapping(index=index_name)
+        response = es_service.get_index_mapping(index_name=index_name)
         return response
     except NotFoundError:
         raise HTTPException(status_code=404, detail="Index not found")
@@ -121,15 +121,12 @@ def knn_search(request: KNNRequest):
     return es_service.knn_search(
         index_name=request.index_name,
         field=request.query.field,
-        query_vector=request.query.query_vector,
+        query_vector=embedding_service.encode(request.query.query_text),
         k=request.query.k,
         num_candidates=request.query.num_candidates
     )
 
 
-@app.post("/create_embeddings/")
-def create_embeddings(request: EmbeddingRequest):
-    return {"embedding": embedding_service.encode(request.text)}
 
 
 @app.post("/upload_file/")

@@ -71,7 +71,7 @@ def mean_pooling(model_output, attention_mask):
 # Sentences we want sentence embeddings for
 sentences = ['This is an example sentence', 'Each sentence is converted']
 
-# Load model from HuggingFace Hub
+# Load bert-base-nli-mean-tokens from HuggingFace Hub
 tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
 model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
 

@@ -4,7 +4,7 @@ from typing import List
 
 class KNNQuery(BaseModel):
     field: str
-    query_vector: List[float]
+    query_text: str
     k: int = 2
     num_candidates: int = 500
 

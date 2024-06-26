@@ -1,5 +1,5 @@
 import streamlit as st
-from ..utils.api_client import APIClient
+from utils.api_client import APIClient
 
 
 def index_management(api_client: APIClient):

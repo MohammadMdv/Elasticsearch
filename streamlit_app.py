@@ -12,7 +12,7 @@ st.write(
 
 st.write(
     "Imagine you are evaluating different embedding_models for a Q&A bot "
-    "and you want to evaluate a set of model generated responses. "
+    "and you want to evaluate a set of bert-base-nli-mean-tokens generated responses. "
     "You have collected some user data. "
     "Here is a sample question and response set."
 )
@@ -46,7 +46,7 @@ df = pd.DataFrame(data)
 st.write(df)
 
 st.write(
-    "Now I want to evaluate the responses from my model. "
+    "Now I want to evaluate the responses from my bert-base-nli-mean-tokens. "
     "One way to achieve this is to use the very powerful `st.data_editor` feature. "
     "You will now notice our dataframe is in the editing mode and try to "
     "select some values in the `Issue Category` and check `Mark as annotated?` once finished 👇"
