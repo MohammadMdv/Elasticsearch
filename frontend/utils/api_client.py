@@ -26,7 +26,7 @@ class APIClient:
         response = requests.post(f"{self.base_url}/search/", json={"index_name": index_name, "query": query})
         return response.json()
 
-    def knn_search(self, query):
+    def knn_search(self, index_name, query):
         response = requests.post(f"{self.base_url}/knn_search/", json=query)
         return response.json()
 
@@ -40,4 +40,8 @@ class APIClient:
 
     def generate_embedding(self, text):
         response = requests.post(f"{self.base_url}/generate_embedding/", json={"text": text})
+        return response.json()
+
+    def get_index_mapping(self, index_name):
+        response = requests.get(f"{self.base_url}/get_index_mapping/{index_name}")
         return response.json()

@@ -91,3 +91,9 @@ class ElasticsearchService:
         response = helpers.bulk(self.client, actions)
         logger.info(f"Bulk inserted {str(response)} documents to {index_name} index")
         return response
+
+    @handle_elasticsearch_errors
+    def get_index_mapping(self, index_name: str):
+        response = self.client.indices.get_mapping(index=index_name)
+        logger.info(f"Getting mapping for index {index_name}")
+        return response

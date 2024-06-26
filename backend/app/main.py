@@ -1,12 +1,14 @@
+from typing import Dict, Any
+
+from elasticsearch import NotFoundError
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
-from typing import List, Dict, Any
 
+from .models.document import Document
 from .models.knn_search_request import KNNRequest
 from .services.elasticsearch_service import ElasticsearchService
 from .services.embedding_service import EmbeddingService
 from .utils.file_utils import save_uploaded_file, load_json_file
-from .models.document import Document
 
 app = FastAPI()
 es_service = ElasticsearchService()
@@ -29,6 +31,21 @@ class EmbeddingRequest(BaseModel):
 
 class SetModelRequest(BaseModel):
     model_name: str
+
+
+class IndexMappingRequest(BaseModel):
+    index_name: str
+
+
+@app.get("/get_index_mapping/{index_name}")
+async def get_index_mapping(index_name: str):
+    try:
+        response = es_service.get_index_mapping(index=index_name)
+        return response
+    except NotFoundError:
+        raise HTTPException(status_code=404, detail="Index not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/set_model/")
