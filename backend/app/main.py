@@ -37,6 +37,25 @@ class IndexMappingRequest(BaseModel):
     index_name: str
 
 
+class SemanticSearchRequest(BaseModel):
+    index_name: str
+    query: dict
+    k: int
+
+
+@app.get("/get_vector_fields/{index_name}")
+async def get_vector_fields(index_name: str):
+    try:
+        mappings = es_service.get_index_mapping(index=index_name)
+        properties = mappings[index_name]['mappings']['properties']
+        vector_fields = [field for field in properties.keys() if field.endswith('_vector')]
+        return {"vector_fields": vector_fields}
+    except NotFoundError:
+        raise HTTPException(status_code=404, detail="Index not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/get_index_mapping/{index_name}")
 async def get_index_mapping(index_name: str):
     try:

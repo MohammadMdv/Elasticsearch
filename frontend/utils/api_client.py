@@ -26,7 +26,7 @@ class APIClient:
         response = requests.post(f"{self.base_url}/search/", json={"index_name": index_name, "query": query})
         return response.json()
 
-    def knn_search(self, index_name, query):
+    def knn_search(self, query):
         response = requests.post(f"{self.base_url}/knn_search/", json=query)
         return response.json()
 
@@ -44,4 +44,8 @@ class APIClient:
 
     def get_index_mapping(self, index_name):
         response = requests.get(f"{self.base_url}/get_index_mapping/{index_name}")
+        return response.json()
+
+    def get_vector_fields(self, index_name):
+        response = requests.get(f"{self.base_url}/get_vector_fields/{index_name}")
         return response.json()
