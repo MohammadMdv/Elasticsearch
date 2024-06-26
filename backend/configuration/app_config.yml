@@ -9,4 +9,4 @@ logger:
   level: INFO
 
 embedding:
-  model_name: "all-MiniLM-L6-v2"
+  model_names: ["all-MiniLM-L6-v2", "bert-base-nli-mean-tokens", "roberta-base-nli-stsb-mean-tokens"]

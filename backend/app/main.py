@@ -1,6 +1,8 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Any
+
+from .models.knn_search_request import KNNRequest
 from .services.elasticsearch_service import ElasticsearchService
 from .services.embedding_service import EmbeddingService
 from .utils.file_utils import save_uploaded_file, load_json_file
@@ -23,6 +25,24 @@ class SearchRequest(BaseModel):
 
 class EmbeddingRequest(BaseModel):
     text: str
+
+
+class SetModelRequest(BaseModel):
+    model_name: str
+
+
+@app.post("/set_model/")
+def set_model(request: SetModelRequest):
+    try:
+        embedding_service.set_model(request.model_name)
+        return {"message": f"Model set to {request.model_name}"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/get_available_models/")
+def get_available_models():
+    return {"available_models": embedding_service.get_available_models()}
 
 
 @app.post("/create_index/")
@@ -58,6 +78,17 @@ def delete_document(index_name: str, doc_id):
 @app.post("/search/")
 def search(request: SearchRequest):
     return es_service.search(request.query, request.index_name)
+
+
+@app.post("/knn_search/")
+def knn_search(request: KNNRequest):
+    return es_service.knn_search(
+        index_name=request.index_name,
+        field=request.query.field,
+        query_vector=request.query.query_vector,
+        k=request.query.k,
+        num_candidates=request.query.num_candidates
+    )
 
 
 @app.post("/create_embeddings/")
