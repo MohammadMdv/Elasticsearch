@@ -82,8 +82,14 @@ def get_available_models():
 
 
 @app.post("/create_index/")
-def create_index(request: IndexRequest):
-    return es_service.create_index(request.index_name, request.mapping)
+async def create_index(request: IndexRequest):
+    print(f"Received request: {request}")
+    try:
+        result = es_service.create_index(request.index_name, request.mapping)
+        return {"message": "Index created successfully", "result": result}
+    except Exception as e:
+        print(f"Error creating index: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/insert_document/")
@@ -125,8 +131,6 @@ def knn_search(request: KNNRequest):
         k=request.query.k,
         num_candidates=request.query.num_candidates
     )
-
-
 
 
 @app.post("/upload_file/")

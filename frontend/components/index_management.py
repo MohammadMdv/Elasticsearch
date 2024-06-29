@@ -24,10 +24,15 @@ def index_management(api_client: APIClient):
                     field["name"]: {"type": field["type"]} for field in fields
                 }
             }
+            st.write("Sending request with data:")
+            st.json({"index_name": index_name, "mapping": mapping})
             response = api_client.create_index(index_name, mapping)
+            st.write("Response:")
             st.write(response)
+            if "error" in response:
+                st.error(f"Error occurred: {response['error']}")
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"Unexpected error: {e}")
 
     st.subheader("Delete Index")
     delete_index_name = st.text_input("Index Name to Delete")

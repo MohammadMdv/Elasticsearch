@@ -1,14 +1,25 @@
 import requests
+import json
+
+from requests import RequestException
 
 
 class APIClient:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def create_index(self, index_name, mappings):
-        response = requests.post(f"{self.base_url}/create_index/",
-                                 json={"index_name": index_name, "mappings": mappings})
-        return response.json()
+    def create_index(self, index_name, mapping):
+        data = {"index_name": index_name, "mapping": mapping}
+        print(f"Sending request to {self.base_url}/create_index/")
+        print(f"Request data: {json.dumps(data, indent=2)}")
+        try:
+            response = requests.post(f"{self.base_url}/create_index/", json=data, timeout=30)
+            print(f"Response status code: {response.status_code}")
+            print(f"Response content: {response.text}")
+            return response.json()
+        except RequestException as e:
+            print(f"Request failed: {e}")
+            return {"error": str(e)}
 
     def delete_index(self, index_name):
         response = requests.delete(f"{self.base_url}/delete_index/", params={"index_name": index_name})
