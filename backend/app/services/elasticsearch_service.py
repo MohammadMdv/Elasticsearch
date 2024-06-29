@@ -12,9 +12,10 @@ class ElasticsearchService:
 
     @handle_elasticsearch_errors
     def create_index(self, index_name: str, mapping: dict):
+        logger.info(f'Index mapping {mapping}')
         self.client.indices.create(
             index=index_name,
-            body={'mappings': {'properties': mapping}}
+            body={'mappings': mapping}
         )
         logger.info(f'Created index {index_name}')
         return True

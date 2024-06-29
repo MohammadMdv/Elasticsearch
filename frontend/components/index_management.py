@@ -19,8 +19,12 @@ def index_management(api_client: APIClient):
 
     if st.button("Create Index"):
         try:
-            mappings_dict = {"properties": {field["name"]: {"type": field["type"]} for field in fields}}
-            response = api_client.create_index(index_name, mappings_dict)
+            mapping = {
+                "properties": {
+                    field["name"]: {"type": field["type"]} for field in fields
+                }
+            }
+            response = api_client.create_index(index_name, mapping)
             st.write(response)
         except Exception as e:
             st.error(f"Error: {e}")
