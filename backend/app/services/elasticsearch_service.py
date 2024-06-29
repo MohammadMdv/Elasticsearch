@@ -39,9 +39,16 @@ class ElasticsearchService:
 
     @handle_elasticsearch_errors
     def delete_index(self, index_name: str):
-        self.client.indices.delete(index=index_name)
-        logger.info(f'Deleted index {index_name}')
-        return True
+        if not self.client.indices.exists(index=index_name):
+            logger.warning(f"Index {index_name} does not exist")
+            return False
+        try:
+            self.client.indices.delete(index=index_name)
+            logger.info(f'Deleted index {index_name}')
+            return True
+        except Exception as e:
+            logger.error(f"Error deleting index {index_name}: {str(e)}")
+            raise e
 
     @handle_elasticsearch_errors
     def delete_document(self, index_name: str, doc_id):

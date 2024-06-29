@@ -11,15 +11,19 @@ class APIClient:
         return response.json()
 
     def delete_index(self, index_name):
-        response = requests.delete(f"{self.base_url}/delete_index/{index_name}")
+        response = requests.delete(f"{self.base_url}/delete_index/", params={"index_name": index_name})
         return response.json()
 
-    def insert_document(self, index_name, document):
-        response = requests.post(f"{self.base_url}/add_document/{index_name}", json=document)
+    def insert_document(self, index_name, body, doc_id=None):
+        data = {"index_name": index_name, "body": body}
+        if doc_id:
+            data["doc_id"] = doc_id
+        response = requests.post(f"{self.base_url}/insert_document/", json=data)
         return response.json()
 
     def delete_document(self, index_name, doc_id):
-        response = requests.delete(f"{self.base_url}/delete_document/{index_name}/{doc_id}")
+        response = requests.delete(f"{self.base_url}/delete_document/",
+                                   params={"index_name": index_name, "doc_id": doc_id})
         return response.json()
 
     def search(self, index_name, query):
