@@ -1,7 +1,10 @@
+from typing import List
+
 from ..elasticsearch_client import ElasticsearchClient
 from ..utils.decorator import handle_elasticsearch_errors
 from ..logger import Logger
 from elasticsearch import helpers
+from app.services.embedding_service import EmbeddingService
 
 logger = Logger(__name__)
 
@@ -9,6 +12,7 @@ logger = Logger(__name__)
 class ElasticsearchService:
     def __init__(self):
         self.client = ElasticsearchClient().get_client()
+        self.embedding_service = EmbeddingService()
 
     @handle_elasticsearch_errors
     def create_index(self, index_name: str, mapping: dict):
@@ -24,6 +28,33 @@ class ElasticsearchService:
     def insert_one_document(self, index_name: str, body: dict, doc_id=None):
         response = self.client.index(index=index_name, id=doc_id, body=body)
         logger.info(f"Inserted one document to {index_name} with body: {body}")
+        return response
+
+    @handle_elasticsearch_errors
+    def insert_document(self, index_name: str, document: dict, semantic_fields: List[str]):
+        for field in semantic_fields:
+            if field in document:
+                vector = self.embedding_service.encode(document[field])
+                document[f"{field}_vector"] = vector
+        response = self.client.index(index=index_name, body=document)
+        logger.info(f"Inserted document to {index_name} with body: {document}")
+        return response
+
+    @handle_elasticsearch_errors
+    def bulk_insert_documents_with_embedding(self, index_name: str, documents: List[dict], semantic_fields: List[str]):
+        actions = []
+        for doc in documents:
+            for field in semantic_fields:
+                if field in doc:
+                    vector = self.embedding_service.encode(doc[field])
+                    doc[f"{field}_vector"] = vector
+            actions.append({
+                "_op_type": "index",
+                "_index": index_name,
+                "_source": doc
+            })
+        response = helpers.bulk(self.client, actions)
+        logger.info(f"Bulk inserted {str(response)} documents to {index_name} index")
         return response
 
     @handle_elasticsearch_errors
