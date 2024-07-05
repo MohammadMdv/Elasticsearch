@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from elasticsearch import NotFoundError
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -43,6 +43,18 @@ class SemanticSearchRequest(BaseModel):
     k: int
 
 
+class IndexCreateRequest(BaseModel):
+    index_name: str
+    mapping: Dict[str, Any]
+    semantic_fields: List[str]
+
+
+class DocumentInsertRequest(BaseModel):
+    index_name: str
+    document: Dict[str, Any]
+    semantic_fields: List[str]
+
+
 @app.get("/get_vector_fields/{index_name}")
 async def get_vector_fields(index_name: str):
     try:
@@ -82,19 +94,27 @@ def get_available_models():
 
 
 @app.post("/create_index/")
-async def create_index(request: IndexRequest):
-    print(f"Received request: {request}")
+async def create_index(request: IndexCreateRequest):
     try:
+        # Update mapping to include vector fields for semantic fields
+        for field in request.semantic_fields:
+            request.mapping["properties"][f"{field}_vector"] = {
+                "type": "dense_vector",
+                "dims": 768
+            }
         result = es_service.create_index(request.index_name, request.mapping)
         return {"message": "Index created successfully", "result": result}
     except Exception as e:
-        print(f"Error creating index: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.post("/insert_document/")
-def insert_document(request: Document):
-    return es_service.insert_one_document(request.index_name, request.body, request.doc_id)
+async def insert_document(request: DocumentInsertRequest):
+    try:
+        result = es_service.insert_document(request.index_name, request.document, request.semantic_fields)
+        return {"message": "Document inserted successfully", "result": result}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get("/get_document/")

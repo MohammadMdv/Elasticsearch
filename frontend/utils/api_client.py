@@ -8,12 +8,20 @@ class APIClient:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def create_index(self, index_name, mapping):
+    def insert_document(self, index_name, document, semantic_fields):
+        response = requests.post(f"{self.base_url}/insert_document/",
+                                 json={"index_name": index_name, "document": document,
+                                       "semantic_fields": semantic_fields})
+        return response.json()
+
+    def create_index(self, index_name, mapping, semantic_fields):
         data = {"index_name": index_name, "mapping": mapping}
         print(f"Sending request to {self.base_url}/create_index/")
         print(f"Request data: {json.dumps(data, indent=2)}")
         try:
-            response = requests.post(f"{self.base_url}/create_index/", json=data, timeout=30)
+            response = requests.post(f"{self.base_url}/create_index/",
+                                                json={"index_name": index_name, "mapping": mapping,
+                                                      "semantic_fields": semantic_fields}, timeout=30)
             print(f"Response status code: {response.status_code}")
             print(f"Response content: {response.text}")
             return response.json()
@@ -23,13 +31,6 @@ class APIClient:
 
     def delete_index(self, index_name):
         response = requests.delete(f"{self.base_url}/delete_index/", params={"index_name": index_name})
-        return response.json()
-
-    def insert_document(self, index_name, body, doc_id=None):
-        data = {"index_name": index_name, "body": body}
-        if doc_id:
-            data["doc_id"] = doc_id
-        response = requests.post(f"{self.base_url}/insert_document/", json=data)
         return response.json()
 
     def delete_document(self, index_name, doc_id):
